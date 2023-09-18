@@ -5,7 +5,7 @@ use geozero::{ToWkt, ToGeo, ToJson};
 use std::convert::TryFrom;
 use std::io::{self, BufRead};
 
-fn st_fromwkb(hexwkb: &str) -> String{
+fn st_aswkt(hexwkb: &str) -> String{
     let wkb = Wkb(hex::decode(hexwkb.to_string()).unwrap());
     return wkb.to_wkt().unwrap()
     
@@ -46,7 +46,7 @@ fn main() {
                 // Traitement de l'entrée
                 let mut result = match function.as_str() {
                     "st_asgeojson" => st_asgeojson(input.trim_end_matches('\n')),
-                    "st_fromwkb" => st_fromwkb(input.trim_end_matches('\n')),
+                    "st_aswkt" => st_aswkt(input.trim_end_matches('\n')),
                     _ => panic!("not implemented"),
                 };
                 println!("{}", result);
