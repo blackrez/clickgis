@@ -7,13 +7,13 @@ use std::convert::TryFrom;
 use std::io::{self, BufRead};
 
 fn st_aswkt(hexwkb: &str) -> String{
-    let wkb = Wkb(hex::decode(hexwkb.to_string()).unwrap());
+    let wkb = Wkb(hex::decode(&hexwkb).unwrap());
     return wkb.to_wkt().unwrap()
     
 }
 
 fn st_asgeojson(hexwkb: &str) -> String {
-    let wkb = Wkb(hex::decode(hexwkb.to_string()).unwrap());
+    let wkb = Wkb(hex::decode(&hexwkb).unwrap());
     return wkb.to_json().unwrap()
 }
 
@@ -26,7 +26,7 @@ fn print_type_of<T>(_: &T) {
 fn st_geometrytype(hexwkb: &str) -> String {
     // Actually it takes a wkb because their is not geo type defined.
     // I will change when #2 will resolved
-    let geom = Wkb(hex::decode(hexwkb.to_string()).unwrap()).to_geo().unwrap();
+    let geom = Wkb(hex::decode(&hexwkb).unwrap()).to_geo().unwrap();
     let type_geom = match geom {
         Geometry::Point(_) => "Point",
         Geometry::Line(_) => "Line",
