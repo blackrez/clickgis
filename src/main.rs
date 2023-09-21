@@ -1,6 +1,7 @@
 use geozero::wkb::{Wkb};
 use geozero::wkt::{WktReader, WktWriter};
 use clap::{arg, command};
+use geo::{Geometry};
 use geozero::{ToWkt, ToGeo, ToJson};
 use std::convert::TryFrom;
 use std::io::{self, BufRead};
@@ -14,6 +15,31 @@ fn st_aswkt(hexwkb: &str) -> String{
 fn st_asgeojson(hexwkb: &str) -> String {
     let wkb = Wkb(hex::decode(hexwkb.to_string()).unwrap());
     return wkb.to_json().unwrap()
+}
+
+/**Useful function for debug
+fn print_type_of<T>(_: &T) {
+    println!("{}", std::any::type_name::<T>())
+}
+**/
+
+fn st_geometrytype(hexwkb: &str) -> String {
+    // Actually it takes a wkb because their is not geo type defined.
+    // I will change when #2 will resolved
+    let geom = Wkb(hex::decode(hexwkb.to_string()).unwrap()).to_geo().unwrap();
+    let type_geom = match geom {
+        Geometry::Point(_) => "Point",
+        Geometry::Line(_) => "Line",
+        Geometry::LineString(_) => "LineString", 
+        Geometry::Polygon(_) => "Polygon",
+        Geometry::MultiPoint(_) => "MultiPoint",
+        Geometry::MultiLineString(_) => "MultiLineString", 
+        Geometry::MultiPolygon(_) => "MultiPolygon", 
+        Geometry::GeometryCollection(_) => "GeometryCollection",
+        Geometry::Rect(_) => "Rect",
+        Geometry::Triangle(_) => "Triangle"
+    };
+    return type_geom.to_string();
 }
 /**
 fn st_contains(hexwkb1: String, hexwkb2: String) -> bool {
@@ -44,9 +70,10 @@ fn main() {
                     break;
                 }
                 // Traitement de l'entrée
-                let mut result = match function.as_str() {
+                let result = match function.as_str() {
                     "st_asgeojson" => st_asgeojson(input.trim_end_matches('\n')),
                     "st_aswkt" => st_aswkt(input.trim_end_matches('\n')),
+                    "st_geometrytype" => st_geometrytype(input.trim_end_matches('\n')),
                     _ => panic!("not implemented"),
                 };
                 println!("{}", result);
